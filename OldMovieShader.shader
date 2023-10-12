@@ -1,4 +1,4 @@
-﻿Shader "Custom/OldMovieShader"
+﻿Shader "ShaderOfJSNi/OldMovieShader"
 {
     //Material顯示的內容
     Properties
