@@ -1,0 +1,23 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture2D<float4> ScratchesTex;
+int posArrayaLength;
+StructuredBuffer<float3> RandomPosArray;
+[numthreads(8, 8, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+	ScratchesTex[id.xy] = float4(1, 1, 1, 1);
+	for (int i = 0; i < posArrayaLength; i++)
+	{
+		float xDis = abs(RandomPosArray[i].x - id.x);
+		float _dis = xDis / RandomPosArray[i].z;
+		if (_dis < 1)
+		{
+			ScratchesTex[id.xy] = float4(_dis, _dis, _dis, 1);
+		}
+	}
+	// TODO: insert actual code here!
+}

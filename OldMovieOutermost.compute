@@ -1,0 +1,26 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture2D<float4> OutermostTex;
+int BlackWidth;
+int GradientWidth;
+[numthreads(8, 8, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+	OutermostTex[id.xy] = float4(1, 1, 1, 1);
+	float centerV = 1024 / 2;//Texture的寬高我設定一樣
+	
+	float disX = abs(id.x - centerV);
+	float disY = abs(id.y - centerV);
+	float outermost1V = centerV - BlackWidth;
+	float outermost2V = outermost1V - GradientWidth;
+	if (disX > outermost1V || disY > outermost1V) {
+		OutermostTex[id.xy] = float4(0, 0, 0, 1);
+	}
+	else if (disX > outermost2V || disY > outermost2V) {
+		float colorV = 1-(max(disX, disY) - outermost2V) / GradientWidth;
+		OutermostTex[id.xy] = float4(colorV, colorV, colorV, 1);
+	}
+}
